@@ -2,6 +2,8 @@ package com.lhalcyon.adapter.helper;
 
 import android.view.View;
 
+import com.lhalcyon.adapter.BasicAdapter;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,6 +65,13 @@ public class BasicController {
         }
 
 
+        public <T> BasicAdapter create(List<T> data){
+            BasicAdapter<T> adapter = new BasicAdapter<>();
+            return adapter
+                    .setData(data)
+                    .setParams(p)
+                    ;
+        }
 
     }
 
