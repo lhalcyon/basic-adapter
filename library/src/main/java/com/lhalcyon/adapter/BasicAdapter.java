@@ -5,6 +5,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.ViewGroup;
 
+import java.util.List;
+
 /**
  * ©2016-2017 kmhealthcloud.All Rights Reserved <p/>
  * Created by: L  <br/>
@@ -13,8 +15,8 @@ import android.view.ViewGroup;
 
 public class BasicAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
 
-    private Context mContext;
-
+    protected Context mContext;
+    protected List<T> mData;
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
