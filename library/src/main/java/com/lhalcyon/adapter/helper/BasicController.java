@@ -1,8 +1,7 @@
 package com.lhalcyon.adapter.helper;
 
+import android.support.annotation.LayoutRes;
 import android.view.View;
-
-import com.lhalcyon.adapter.BasicAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,9 +37,18 @@ public class BasicController {
             this.p = new BasicParams();
         }
 
+        public Builder layoutRes(int layoutId){
+            p.layoutId = layoutId;
+            return this;
+        }
 
         public Builder choiceMode(int choiceMode){
             p.choiceMode = choiceMode;
+            return this;
+        }
+
+        public Builder checkId(int checkId){
+            p.checkId = checkId;
             return this;
         }
 
@@ -64,24 +72,21 @@ public class BasicController {
             return this;
         }
 
-
-        public <T> BasicAdapter create(List<T> data){
-            BasicAdapter<T> adapter = new BasicAdapter<>();
-            return adapter
-                    .setData(data)
-                    .setParams(p)
-                    ;
+        public BasicParams build(){
+            return p;
         }
+
 
     }
 
     public static class BasicParams{
         public int choiceMode = CHOICE_MODE_NONE;
+        public int checkId = -1;
         public List<View> headers = new ArrayList<>();
         public List<View> footers = new ArrayList<>();
         public View loadMore;
         public View empty;
-
+        @LayoutRes public int layoutId;
 
     }
 }
