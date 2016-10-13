@@ -24,11 +24,11 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
  */
 
 public abstract class BasicAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
-    public static final int NORMAL_VIEW = 0;
-    public static final int HEADER_VIEW = 1;
-    public static final int LOADING_VIEW = 2;
-    public static final int FOOTER_VIEW = 3;
-    public static final int EMPTY_VIEW = 4;
+    public static final int NORMAL_VIEW = 0;//normal item
+    public static final int HEADER_VIEW = 1;//header part
+    public static final int LOAD_VIEW = 2;//loading/loaded part
+    public static final int FOOTER_VIEW = 3;//footer part
+    public static final int EMPTY_VIEW = 4;//empty part
 
 
     BasicParams mParams;
@@ -36,8 +36,10 @@ public abstract class BasicAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
     protected List<T> mData;
     private LinearLayout mHeaderLayout;
     private LinearLayout mFooterLayout;
+    private LinearLayout mEmptyLayout;
+    private LinearLayout mLoadLayout;
 
-    public BasicAdapter(BasicParams params,List<T> data) {
+    public BasicAdapter(BasicParams params, List<T> data) {
         mParams = params;
         this.mData = data;
     }
@@ -61,31 +63,15 @@ public abstract class BasicAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
 
     @Override
     public int getItemViewType(int position) {
-        if (mData.size() > 0) {
-            if (position == 0) { //position 0 is headers container
-                return HEADER_VIEW;
-            } else if (position == mData.size() + 1) {//position mData.size()+1 is loading
-                return LOADING_VIEW;
-            } else if (position == mData.size() + 2) {//position mData.size()+2 is footers container
-                return FOOTER_VIEW;
-            } else {//otherwise  normal
-                return NORMAL_VIEW;
-            }
-        } else { // mData.size() == 0 , empty view should hold a position, loading view is not necessary
-            if (position == 0) {//position 0 is headers container
-                return HEADER_VIEW;
-            } else if (position == 1) {//position 1 is empty
-                return EMPTY_VIEW;
-            } else if (position == 2) {//position 2 is footers container
-                return FOOTER_VIEW;
-            } else {//no this circumstance
-                return super.getItemViewType(position);
-            }
+        if (position == 0) {
+            return HEADER_VIEW;
+        } else if (position == mData.size() + 1) {
+            return FOOTER_VIEW;
+        } else {
+            return NORMAL_VIEW;
         }
 
-
     }
-
 
 
     @Override
@@ -95,7 +81,7 @@ public abstract class BasicAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
         BaseViewHolder vh = null;
         switch (viewType) {
             case EMPTY_VIEW:
-                vh = new BaseViewHolder(mParams.empty);
+                vh = onCreateEmptyHolder(parent);
                 break;
             case NORMAL_VIEW:
                 vh = onCreateDefViewHolder(parent);
@@ -106,12 +92,36 @@ public abstract class BasicAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
             case FOOTER_VIEW:
                 vh = onCreateFooterHolder(parent);
                 break;
-            case LOADING_VIEW:
-                vh = new BaseViewHolder(mParams.loadMore);
+            case LOAD_VIEW:
+                vh = onCreateLoadHolder(parent);
                 break;
 
         }
         return vh;
+    }
+
+    private BaseViewHolder onCreateLoadHolder(ViewGroup parent) {
+        mLoadLayout = new LinearLayout(parent.getContext());
+        mLoadLayout.setOrientation(LinearLayout.VERTICAL);
+        mLoadLayout.setLayoutParams(new LayoutParams(MATCH_PARENT, WRAP_CONTENT));
+        if (mParams.loading != null) {
+            mLoadLayout.addView(mParams.loading);
+        }
+        if (mParams.loaded != null) {
+            mLoadLayout.addView(mParams.loaded);
+        }
+        return new BaseViewHolder(mLoadLayout);
+    }
+
+    private BaseViewHolder onCreateEmptyHolder(ViewGroup parent) {
+        mEmptyLayout = new LinearLayout(parent.getContext());
+        mEmptyLayout.setOrientation(LinearLayout.VERTICAL);
+        mEmptyLayout.setLayoutParams(new LayoutParams(MATCH_PARENT, MATCH_PARENT));
+        if (mParams.empty != null) {
+            mEmptyLayout.addView(mParams.empty);
+        }
+        mEmptyLayout.setVisibility(View.GONE);
+        return new BaseViewHolder(mEmptyLayout);
     }
 
     private BaseViewHolder onCreateFooterHolder(ViewGroup parent) {
@@ -160,7 +170,7 @@ public abstract class BasicAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
         int viewType = holder.getItemViewType();
         BaseViewHolder vh = (BaseViewHolder) holder;
         switch (viewType) {
-            case LOADING_VIEW:
+            case LOAD_VIEW:
 //                addLoadMore(holder);
                 //todo load more
                 break;
@@ -174,7 +184,7 @@ public abstract class BasicAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
             default:
                 int realPosition = holder.getLayoutPosition() - 1;
                 T t = mData.get(realPosition);
-                convert(vh, realPosition,t);
+                convert(vh, realPosition, t);
                 if (mParams.checkId != -1) {
                     vh.setChecked(mParams.checkId, isItemChecked(t, position));
                 }
@@ -188,13 +198,13 @@ public abstract class BasicAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
 
     @Override
     public int getItemCount() {
-        int count = 1+1;//header container count + footer container count
-        if(mData.size() == 0){
-            count = mParams.empty == null?count:count+1;//count++ if there is a empty view
-        }else{
+        int count = 1 + 1;//header container count + footer container count
+        if (mData.size() == 0) {
+            count = mParams.empty == null ? count : count + 1;//count++ if there is a empty view
+        } else {
             count += mData.size();
         }
-        count = mParams.loadMore == null?count:count+1;
+        count = mParams.loading == null ? count : count + 1;
         return count;
     }
 }

@@ -1,6 +1,7 @@
 package com.example.adapter;
 
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -26,13 +27,16 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         AlertDialog.Builder eee = null;
         ListView listView = null;
-
+        RecyclerView recyclerView = null;
+        SwipeRefreshLayout refreshLayout;
         View header = View.inflate(this,R.layout.header,null);
+        View header2 = View.inflate(this,R.layout.header2,null);
         View footer = View.inflate(this,R.layout.footer,null);
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler);
         BasicParams p = new BasicController.Builder()
                 .layoutRes(R.layout.item)
                 .addHeaderView(header)
+                .addHeaderView(header2)
                 .addFooterView(footer)
                 .build();
         //normal item data init

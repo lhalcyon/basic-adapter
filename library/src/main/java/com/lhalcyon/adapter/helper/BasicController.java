@@ -63,7 +63,7 @@ public class BasicController {
         }
 
         public Builder setLoadMoreView(View loadMore){
-            p.loadMore = loadMore;
+            p.loading = loadMore;
             return this;
         }
 
@@ -84,7 +84,8 @@ public class BasicController {
         public int checkId = -1;
         public List<View> headers = new ArrayList<>();
         public List<View> footers = new ArrayList<>();
-        public View loadMore;
+        public View loading;
+        public View loaded;
         public View empty;
         @LayoutRes public int layoutId;
 
