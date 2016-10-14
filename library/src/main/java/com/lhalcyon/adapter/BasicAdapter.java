@@ -1,9 +1,11 @@
 package com.lhalcyon.adapter;
 
 import android.content.Context;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.LayoutParams;
 import android.support.v7.widget.RecyclerView.ViewHolder;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -227,6 +229,37 @@ public abstract class BasicAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
 
     protected abstract void convert(BaseViewHolder holder, int position, T t);
 
+
+    /**
+     * When set to true, the item will layout using all span area. That means, if orientation
+     * is vertical, the view will have full width; if orientation is horizontal, the view will
+     * have full height.
+     * if the hold view use StaggeredGridLayoutManager they should using all span area
+     *
+     * @param holder True if this item should traverse all spans.
+     */
+    protected void setFullSpan(RecyclerView.ViewHolder holder) {
+        if (holder.itemView.getLayoutParams() instanceof StaggeredGridLayoutManager.LayoutParams) {
+            StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) holder.itemView.getLayoutParams();
+            params.setFullSpan(true);
+        }
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        RecyclerView.LayoutManager manager = recyclerView.getLayoutManager();
+        if (manager instanceof GridLayoutManager) {
+            final GridLayoutManager gridManager = ((GridLayoutManager) manager);
+            gridManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+                @Override
+                public int getSpanSize(int position) {
+                    int type = getItemViewType(position);
+                    return (type == EMPTY_VIEW || type == HEADER_VIEW || type == FOOTER_VIEW || type == LOAD_VIEW) ? gridManager.getSpanCount() : 1;
+                }
+            });
+        }
+    }
 
 
 
