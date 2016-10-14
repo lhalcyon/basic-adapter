@@ -1,38 +1,38 @@
 package com.example.adapter;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AlertDialog;
+import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.util.Log;
 import android.view.View;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.lhalcyon.adapter.BasicAdapter;
 import com.lhalcyon.adapter.base.BaseViewHolder;
 import com.lhalcyon.adapter.helper.BasicController;
 import com.lhalcyon.adapter.helper.BasicController.BasicParams;
+import com.lhalcyon.adapter.helper.OnLoadMoreListener;
 import com.lhalcyon.adapter.helper.OnRecyclerItemClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnRefreshListener {
     RecyclerView mRecyclerView;
     MyAdapter mAdapter;
     List<Man> mManList = new ArrayList<>();
+    private Handler mHandler = new Handler();
+    int loadCount = 0;
+    SwipeRefreshLayout mRefreshLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        AlertDialog.Builder eee = null;
-        ListView listView = null;
-        RecyclerView recyclerView = null;
-        SwipeRefreshLayout refreshLayout;
         View header = View.inflate(this,R.layout.header,null);
         View header2 = View.inflate(this,R.layout.header2,null);
         View footer = View.inflate(this,R.layout.footer,null);
@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
         View empty = View.inflate(this,R.layout.empty,null);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler);
+        mRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh);
         BasicParams p = new BasicController.Builder()
                 .layoutRes(R.layout.item)
                 .header(header)
@@ -49,11 +50,29 @@ public class MainActivity extends AppCompatActivity {
                 .empty(empty)
                 .loaded(loaded)
                 .loading(loading)
+                .onLoadMore(new OnLoadMoreListener() {
+                    @Override
+                    public void onLoad() {
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                if(loadCount <2){
+                                    mManList.addAll(random(mManList.size(),3));
+                                    mAdapter.notifyDataSetChanged();
+                                    mAdapter.finishLoad();
+                                    loadCount++;
+                                }else{
+                                    mManList.addAll(random(mManList.size(),3));
+                                    mAdapter.doneLoad();
+                                }
+
+                            }
+                        },2000);
+                    }
+                })
                 .build();
         //normal item data init
-        for (int i = 0; i < 12; i++) {
-            mManList.add(new Man("name"+i));
-        }
+//        mManList.addAll(random(0,10));
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(mAdapter = new MyAdapter(p,mManList));
@@ -66,8 +85,37 @@ public class MainActivity extends AppCompatActivity {
                 Log.i("halcyon","position " +position + " click");
             }
         });
-
+        mRefreshLayout.setOnRefreshListener(this);
+        mRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                mRefreshLayout.setRefreshing(true);
+                onRefresh();
+            }
+        });
     }
+
+    private List<Man> random(int start,int count){
+        List<Man> list = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            list.add(new Man("name"+(start+i)));
+        }
+        return list;
+    }
+
+    @Override
+    public void onRefresh() {
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mManList.clear();
+                mManList.addAll(random(mManList.size(),5));
+                mAdapter.notifyDataSetChanged();
+                mRefreshLayout.setRefreshing(false);
+            }
+        },1500);
+    }
+
 
     public static class Man{
         public String name;

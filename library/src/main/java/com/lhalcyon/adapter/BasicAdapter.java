@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 
 import com.lhalcyon.adapter.base.BaseViewHolder;
 import com.lhalcyon.adapter.helper.BasicController.BasicParams;
+import com.lhalcyon.adapter.helper.OnItemClickListener;
 
 import java.util.List;
 
@@ -37,6 +38,7 @@ public abstract class BasicAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
     BasicParams mParams;
     protected Context mContext;
     protected List<T> mData;
+    protected boolean isLoadEnable = true;
     /**
      * container of headers
      */
@@ -54,10 +56,17 @@ public abstract class BasicAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
      */
     private LinearLayout mLoadLayout;
 
+    private OnItemClickListener mOnItemClickListener;
+
     public BasicAdapter(BasicParams params, List<T> data) {
         mParams = params;
         this.mData = data;
     }
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        mOnItemClickListener = onItemClickListener;
+    }
+
 
 
     public boolean isItemChecked(T t, int position) {
@@ -217,17 +226,40 @@ public abstract class BasicAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
 
     }
 
+
     private void configLoad(ViewHolder holder) {
         //if size of data is 0,empty view shows if exists and loading/loaded view  hides.
         if (mData.size() == 0) {
             return;
         }
-        if (mParams.loading != null) {
-
+        if (mParams.loading != null && isLoadEnable()) {
+            mParams.loading.setVisibility(View.VISIBLE);
+            if(mParams.onLoadMoreListener == null){
+                throw new RuntimeException("OnLoadMoreListener should be init when build loading view !");
+            }
+            mParams.onLoadMoreListener.onLoad();
         }
     }
 
+    private boolean isLoadEnable() {
+        return isLoadEnable;
+    }
+
+    public void finishLoad(){
+        if(mParams.loading != null){
+            mParams.loading.setVisibility(View.GONE);
+        }
+    }
+
+    public void doneLoad(){
+        isLoadEnable = false;
+        mParams.loading.setVisibility(View.GONE);
+        mParams.loaded.setVisibility(View.VISIBLE);
+    }
+
     protected abstract void convert(BaseViewHolder holder, int position, T t);
+
+
 
 
     /**

@@ -67,6 +67,11 @@ public class BasicController {
             return this;
         }
 
+        public Builder onLoadMore(OnLoadMoreListener listener){
+            p.onLoadMoreListener = listener;
+            return this;
+        }
+
         public Builder loaded(View loaded){
             p.loaded = loaded;
             return this;
@@ -92,6 +97,7 @@ public class BasicController {
         public View loading;
         public View loaded;
         public View empty;
+        public OnLoadMoreListener onLoadMoreListener;
         @LayoutRes public int layoutId;
 
     }
