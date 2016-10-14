@@ -6,13 +6,17 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.ViewHolder;
+import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.lhalcyon.adapter.BasicAdapter;
 import com.lhalcyon.adapter.base.BaseViewHolder;
 import com.lhalcyon.adapter.helper.BasicController;
 import com.lhalcyon.adapter.helper.BasicController.BasicParams;
+import com.lhalcyon.adapter.helper.OnRecyclerItemClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,12 +36,19 @@ public class MainActivity extends AppCompatActivity {
         View header = View.inflate(this,R.layout.header,null);
         View header2 = View.inflate(this,R.layout.header2,null);
         View footer = View.inflate(this,R.layout.footer,null);
+        View loading = View.inflate(this,R.layout.loading,null);
+        View loaded = View.inflate(this,R.layout.loaded,null);
+        View empty = View.inflate(this,R.layout.empty,null);
+
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler);
         BasicParams p = new BasicController.Builder()
                 .layoutRes(R.layout.item)
-                .addHeaderView(header)
-                .addHeaderView(header2)
-                .addFooterView(footer)
+                .header(header)
+                .header(header2)
+                .footer(footer)
+                .empty(empty)
+                .loaded(loaded)
+                .loading(loading)
                 .build();
         //normal item data init
         for (int i = 0; i < 12; i++) {
@@ -46,7 +57,15 @@ public class MainActivity extends AppCompatActivity {
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(mAdapter = new MyAdapter(p,mManList));
+        mRecyclerView.addOnItemTouchListener(new OnRecyclerItemClickListener(mRecyclerView){
 
+            @Override
+            public void onItemClick(ViewHolder vh) {
+                int position = vh.getAdapterPosition();
+                Toast.makeText(getApplicationContext(), "position "+position + " clicked", Toast.LENGTH_SHORT).show();
+                Log.i("halcyon","position " +position + " click");
+            }
+        });
 
     }
 
@@ -72,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void convert(BaseViewHolder holder, int position, Man man) {
+            Log.w("halcyon","设置position-数据"+position+"-"+""+man.name);
             holder.setText(R.id.tv_name,man.name);
         }
     }

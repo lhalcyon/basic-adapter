@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.LayoutParams;
 import android.support.v7.widget.RecyclerView.ViewHolder;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,9 +35,21 @@ public abstract class BasicAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
     BasicParams mParams;
     protected Context mContext;
     protected List<T> mData;
+    /**
+     * container of headers
+     */
     private LinearLayout mHeaderLayout;
+    /**
+     * container of footers
+     */
     private LinearLayout mFooterLayout;
+    /**
+     * container of empty view
+     */
     private LinearLayout mEmptyLayout;
+    /**
+     * container of loading or loaded view
+     */
     private LinearLayout mLoadLayout;
 
     public BasicAdapter(BasicParams params, List<T> data) {
@@ -49,23 +62,32 @@ public abstract class BasicAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
         return false;
     }
 
-    public void itemToggle() {
-
+    public void itemToggle(ViewHolder holder) {
+        if (holder instanceof BaseViewHolder && mParams.checkId != -1) {
+            BaseViewHolder vh = (BaseViewHolder) holder;
+        }
     }
 
-    public int getHeaderViewCount() {
+    public int getHeadersCount() {
         return mParams.headers.size();
     }
 
-    public int getFooterViewCount() {
+    public int getFootersCount() {
         return mParams.footers.size();
     }
 
     @Override
     public int getItemViewType(int position) {
+        int empty = mData.size() == 0 ? 1 : 0;
+
+        if(empty == 1 && position == 1){
+            return EMPTY_VIEW;
+        }
         if (position == 0) {
             return HEADER_VIEW;
-        } else if (position == mData.size() + 1) {
+        } else if (position == mData.size() + 1 + empty) {
+            return LOAD_VIEW;
+        } else if (position == mData.size() + 2 + empty) {
             return FOOTER_VIEW;
         } else {
             return NORMAL_VIEW;
@@ -77,7 +99,6 @@ public abstract class BasicAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
     @Override
     public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         mContext = parent.getContext();
-
         BaseViewHolder vh = null;
         switch (viewType) {
             case EMPTY_VIEW:
@@ -106,21 +127,20 @@ public abstract class BasicAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
         mLoadLayout.setLayoutParams(new LayoutParams(MATCH_PARENT, WRAP_CONTENT));
         if (mParams.loading != null) {
             mLoadLayout.addView(mParams.loading);
+            mParams.loading.setVisibility(View.GONE);
         }
         if (mParams.loaded != null) {
             mLoadLayout.addView(mParams.loaded);
+            mParams.loaded.setVisibility(View.GONE);
         }
         return new BaseViewHolder(mLoadLayout);
     }
 
     private BaseViewHolder onCreateEmptyHolder(ViewGroup parent) {
-        mEmptyLayout = new LinearLayout(parent.getContext());
-        mEmptyLayout.setOrientation(LinearLayout.VERTICAL);
-        mEmptyLayout.setLayoutParams(new LayoutParams(MATCH_PARENT, MATCH_PARENT));
+        mEmptyLayout = (LinearLayout) LayoutInflater.from(parent.getContext()).inflate(R.layout.empty_container,parent,false);
         if (mParams.empty != null) {
-            mEmptyLayout.addView(mParams.empty);
+            mEmptyLayout.addView(mParams.empty,0,new LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.MATCH_PARENT));
         }
-        mEmptyLayout.setVisibility(View.GONE);
         return new BaseViewHolder(mEmptyLayout);
     }
 
@@ -171,40 +191,50 @@ public abstract class BasicAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
         BaseViewHolder vh = (BaseViewHolder) holder;
         switch (viewType) {
             case LOAD_VIEW:
-//                addLoadMore(holder);
-                //todo load more
+                configLoad(holder);
                 break;
             case HEADER_VIEW:
+                //do nothing
                 break;
             case EMPTY_VIEW:
+                //do nothing
                 break;
             case FOOTER_VIEW:
+                //do nothing
                 break;
             case NORMAL_VIEW:
-            default:
-                int realPosition = holder.getLayoutPosition() - 1;
+                int realPosition = holder.getAdapterPosition() - 1;
                 T t = mData.get(realPosition);
                 convert(vh, realPosition, t);
-                if (mParams.checkId != -1) {
-                    vh.setChecked(mParams.checkId, isItemChecked(t, position));
-                }
+//                if (mParams.checkId != -1) {
+//                    vh.setChecked(mParams.checkId, isItemChecked(t, position));
+//                }
                 break;
 
         }
 
     }
 
+    private void configLoad(ViewHolder holder) {
+        //if size of data is 0,empty view shows if exists and loading/loaded view  hides.
+        if (mData.size() == 0) {
+            return;
+        }
+        if (mParams.loading != null) {
+
+        }
+    }
+
     protected abstract void convert(BaseViewHolder holder, int position, T t);
+
+
+
 
     @Override
     public int getItemCount() {
-        int count = 1 + 1;//header container count + footer container count
-        if (mData.size() == 0) {
-            count = mParams.empty == null ? count : count + 1;//count++ if there is a empty view
-        } else {
-            count += mData.size();
-        }
-        count = mParams.loading == null ? count : count + 1;
-        return count;
+        //header container + list size + empty + loading/loaded + footer container
+        int empty = mData.size() == 0 ? 1 : 0;
+        Log.i("halcyon","count:" +empty+mData.size()+1+1+1);
+        return 1 + mData.size() + 1 + 1 + empty;
     }
 }

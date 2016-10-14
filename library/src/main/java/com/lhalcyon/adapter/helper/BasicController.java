@@ -52,22 +52,27 @@ public class BasicController {
             return this;
         }
 
-        public Builder addHeaderView(View header){
+        public Builder header(View header){
             p.headers.add(header);
             return this;
         }
 
-        public Builder addFooterView(View footer){
+        public Builder footer(View footer){
             p.footers.add(footer);
             return this;
         }
 
-        public Builder setLoadMoreView(View loadMore){
+        public Builder loading(View loadMore){
             p.loading = loadMore;
             return this;
         }
 
-        public Builder setEmptyView(View empty){
+        public Builder loaded(View loaded){
+            p.loaded = loaded;
+            return this;
+        }
+
+        public Builder empty(View empty){
             p.empty = empty;
             return this;
         }
