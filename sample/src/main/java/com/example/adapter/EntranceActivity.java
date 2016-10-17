@@ -16,4 +16,8 @@ public class EntranceActivity extends AppCompatActivity {
     public void normal(View v){
         startActivity(new Intent(this,MainActivity.class));
     }
+
+    public void checkable(View v){
+        startActivity(new Intent(this,CheckActivity.class));
+    }
 }

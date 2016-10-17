@@ -217,9 +217,9 @@ public abstract class BasicAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
                 int realPosition = holder.getAdapterPosition() - 1;
                 T t = mData.get(realPosition);
                 convert(vh, realPosition, t);
-//                if (mParams.checkId != -1) {
-//                    vh.setChecked(mParams.checkId, isItemChecked(t, position));
-//                }
+                if (mParams.checkId != -1) {
+                    vh.setChecked(mParams.checkId, isItemChecked(t, position));
+                }
                 break;
 
         }
