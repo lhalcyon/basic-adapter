@@ -6,11 +6,6 @@ import android.view.View;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * ©2016-2017 kmhealthcloud.All Rights Reserved <p/>
- * Created by: L  <br/>
- * Description:
- */
 
 public class BasicController {
 

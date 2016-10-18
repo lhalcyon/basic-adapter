@@ -37,9 +37,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 
-/**
- * https://github.com/CymChad/BaseRecyclerViewAdapterHelper
- */
+
 public class BaseViewHolder extends RecyclerView.ViewHolder {
 
     /**

@@ -24,11 +24,6 @@ import java.util.List;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
-/**
- * ©2016-2017 kmhealthcloud.All Rights Reserved <p/>
- * Created by: L  <br/>
- * Description:
- */
 
 public abstract class BasicAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
     public static final int NORMAL_VIEW = 0;//normal item
