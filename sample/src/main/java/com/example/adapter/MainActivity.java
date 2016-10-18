@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.util.Log;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.lhalcyon.adapter.BasicAdapter;
@@ -33,6 +34,9 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        ListView listView;
+
         View header = View.inflate(this,R.layout.header,null);
         View header2 = View.inflate(this,R.layout.header2,null);
         View footer = View.inflate(this,R.layout.footer,null);

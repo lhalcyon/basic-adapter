@@ -7,14 +7,17 @@ import android.support.v7.widget.RecyclerView.LayoutParams;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.lhalcyon.adapter.base.BaseViewHolder;
+import com.lhalcyon.adapter.helper.BasicController;
 import com.lhalcyon.adapter.helper.BasicController.BasicParams;
 import com.lhalcyon.adapter.helper.OnItemClickListener;
+import com.lhalcyon.adapter.helper.OnRecyclerItemClickListener;
 
 import java.util.List;
 
@@ -56,17 +59,84 @@ public abstract class BasicAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
      */
     private LinearLayout mLoadLayout;
 
+    /**
+     * Running state of which positions are currently checked
+     */
+    SparseBooleanArray mCheckStates;
+
     private OnItemClickListener mOnItemClickListener;
+
+
 
     public BasicAdapter(BasicParams params, List<T> data) {
         mParams = params;
         this.mData = data;
+        if (mParams.choiceMode == BasicController.CHOICE_MODE_SINGLE
+                || mParams.choiceMode == BasicController.CHOICE_MODE_MULTIPLE) {
+            initCheckStates();
+        }
     }
 
-    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+    private void initCheckStates() {
+        mCheckStates = new SparseBooleanArray();
+
+        for (int i = mData.size() - 1; i >= 0; i--) {
+            T t = mData.get(i);
+            if (mParams.choiceMode == BasicController.CHOICE_MODE_SINGLE) {
+                mCheckStates.put(i,isItemChecked(t,i));
+                if(isItemChecked(t,i)){
+                    break;
+                }
+            }else if (mParams.choiceMode == BasicController.CHOICE_MODE_MULTIPLE){
+                mCheckStates.put(i,isItemChecked(t,i));
+            }
+        }
+
+    }
+
+    /**
+     * Clear any choices previously set
+     */
+    public void clearChoices() {
+        if (mCheckStates != null) {
+            mCheckStates.clear();
+        }
+    }
+
+    public void setOnItemClickListener(RecyclerView recyclerView, final OnItemClickListener onItemClickListener) {
         mOnItemClickListener = onItemClickListener;
-    }
+        recyclerView.addOnItemTouchListener(new OnRecyclerItemClickListener(recyclerView){
+            @Override
+            public void onItemClick(ViewHolder vh) {
+                int realPosition = vh.getAdapterPosition() -1 ;
+                boolean oldValue;
+                BaseViewHolder holder = (BaseViewHolder) vh;
+                if(vh.getItemViewType() == NORMAL_VIEW){
+                    if(mParams.choiceMode == BasicController.CHOICE_MODE_SINGLE){
+                        oldValue = mCheckStates.get(realPosition);
+                        if(!oldValue){ //not checked -> checked
+                            clearChoices();
+                            mCheckStates.put(realPosition,true);
+                            notifyDataSetChanged();
+                        }else{ // checked -> not checked
+                            mCheckStates.put(realPosition,false);
+                            holder.setChecked(mParams.checkId,false);
+                        }
 
+                    }else if (mParams.choiceMode == BasicController.CHOICE_MODE_MULTIPLE){
+                        oldValue = mCheckStates.get(realPosition);
+                        mCheckStates.put(realPosition,!oldValue);
+//                        notifyDataSetChanged();
+                        holder.setChecked(mParams.checkId,!oldValue);
+                    }
+                    if(mOnItemClickListener != null){
+                        mOnItemClickListener.onItemClick((BaseViewHolder)vh,realPosition);
+                    }
+                }
+            }
+        });
+
+    }
 
 
     public boolean isItemChecked(T t, int position) {
@@ -91,7 +161,7 @@ public abstract class BasicAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
     public int getItemViewType(int position) {
         int empty = mData.size() == 0 ? 1 : 0;
 
-        if(empty == 1 && position == 1){
+        if (empty == 1 && position == 1) {
             return EMPTY_VIEW;
         }
         if (position == 0) {
@@ -148,9 +218,9 @@ public abstract class BasicAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
     }
 
     private BaseViewHolder onCreateEmptyHolder(ViewGroup parent) {
-        mEmptyLayout = (LinearLayout) LayoutInflater.from(parent.getContext()).inflate(R.layout.empty_container,parent,false);
+        mEmptyLayout = (LinearLayout) LayoutInflater.from(parent.getContext()).inflate(R.layout.empty_container, parent, false);
         if (mParams.empty != null) {
-            mEmptyLayout.addView(mParams.empty,0,new LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.MATCH_PARENT));
+            mEmptyLayout.addView(mParams.empty, 0, new LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
         }
         return new BaseViewHolder(mEmptyLayout);
     }
@@ -217,8 +287,22 @@ public abstract class BasicAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
                 int realPosition = holder.getAdapterPosition() - 1;
                 T t = mData.get(realPosition);
                 convert(vh, realPosition, t);
-                if (mParams.checkId != -1) {
-                    vh.setChecked(mParams.checkId, isItemChecked(t, position));
+                switch (mParams.choiceMode) {
+                    case BasicController.CHOICE_MODE_NONE:
+                        //do nothing
+                        break;
+                    case BasicController.CHOICE_MODE_SINGLE:
+                        if (mParams.checkId != -1 && mCheckStates != null) {
+                            vh.setChecked(mParams.checkId, mCheckStates.get(realPosition));
+                        }
+                        break;
+                    case BasicController.CHOICE_MODE_MULTIPLE:
+                        if (mParams.checkId != -1 && mCheckStates != null) {
+                            vh.setChecked(mParams.checkId, mCheckStates.get(realPosition));
+                        }
+                        break;
+                    default:
+                        throw new NoSuchFieldError("choice mode must be one of SINGLE ,MULTIPLE or NONE");
                 }
                 break;
 
@@ -234,7 +318,7 @@ public abstract class BasicAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
         }
         if (mParams.loading != null && isLoadEnable()) {
             mParams.loading.setVisibility(View.VISIBLE);
-            if(mParams.onLoadMoreListener == null){
+            if (mParams.onLoadMoreListener == null) {
                 throw new RuntimeException("OnLoadMoreListener should be init when build loading view !");
             }
             mParams.onLoadMoreListener.onLoad();
@@ -245,21 +329,19 @@ public abstract class BasicAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
         return isLoadEnable;
     }
 
-    public void finishLoad(){
-        if(mParams.loading != null){
+    public void finishLoad() {
+        if (mParams.loading != null) {
             mParams.loading.setVisibility(View.GONE);
         }
     }
 
-    public void doneLoad(){
+    public void doneLoad() {
         isLoadEnable = false;
         mParams.loading.setVisibility(View.GONE);
         mParams.loaded.setVisibility(View.VISIBLE);
     }
 
     protected abstract void convert(BaseViewHolder holder, int position, T t);
-
-
 
 
     /**
@@ -294,12 +376,11 @@ public abstract class BasicAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
     }
 
 
-
     @Override
     public int getItemCount() {
         //header container + list size + empty + loading/loaded + footer container
         int empty = mData.size() == 0 ? 1 : 0;
-        Log.i("halcyon","count:" +empty+mData.size()+1+1+1);
+        Log.i("halcyon", "count:" + empty + mData.size() + 1 + 1 + 1);
         return 1 + mData.size() + 1 + 1 + empty;
     }
 }
