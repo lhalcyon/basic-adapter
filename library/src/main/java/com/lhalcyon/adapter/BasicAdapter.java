@@ -145,16 +145,16 @@ public abstract class BasicAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
         return null;
     }
 
-
+    /**
+     * need to override when
+     * @param t data obj
+     * @param position position of the data
+     * @return true if item at position is checked ,otherwise false
+     */
     public boolean isItemChecked(T t, int position) {
         return false;
     }
 
-    public void itemToggle(ViewHolder holder) {
-        if (holder instanceof BaseViewHolder && mParams.checkId != -1) {
-            BaseViewHolder vh = (BaseViewHolder) holder;
-        }
-    }
 
     public int getHeadersCount() {
         return mParams.headers.size();
@@ -326,7 +326,7 @@ public abstract class BasicAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
         if (mParams.loading != null && isLoadEnable()) {
             mParams.loading.setVisibility(View.VISIBLE);
             if (mParams.onLoadMoreListener == null) {
-                throw new RuntimeException("OnLoadMoreListener should be init when build loading view !");
+                throw new RuntimeException("OnLoadMoreListener must be init when build loading view !");
             }
             mParams.onLoadMoreListener.onLoad();
         }
