@@ -61,12 +61,12 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
                             @Override
                             public void run() {
                                 if(loadCount <2){
-                                    mManList.addAll(random(mManList.size(),3));
+                                    mManList.addAll(random(mManList.size(),10));
                                     mAdapter.notifyDataSetChanged();
                                     mAdapter.finishLoad();
                                     loadCount++;
                                 }else{
-                                    mManList.addAll(random(mManList.size(),3));
+                                    mManList.addAll(random(mManList.size(),10));
                                     mAdapter.doneLoad();
                                 }
 

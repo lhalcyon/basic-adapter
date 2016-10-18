@@ -13,7 +13,7 @@
     tools:context="com.example.adapter.EntranceActivity">
 
     <Button
-        android:text="普通"
+        android:text="normal"
         android:onClick="normal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

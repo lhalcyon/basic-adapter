@@ -67,7 +67,6 @@ public abstract class BasicAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
     private OnItemClickListener mOnItemClickListener;
 
 
-
     public BasicAdapter(BasicParams params, List<T> data) {
         mParams = params;
         this.mData = data;
@@ -83,12 +82,12 @@ public abstract class BasicAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
         for (int i = mData.size() - 1; i >= 0; i--) {
             T t = mData.get(i);
             if (mParams.choiceMode == BasicController.CHOICE_MODE_SINGLE) {
-                mCheckStates.put(i,isItemChecked(t,i));
-                if(isItemChecked(t,i)){
+                mCheckStates.put(i, isItemChecked(t, i));
+                if (isItemChecked(t, i)) {
                     break;
                 }
-            }else if (mParams.choiceMode == BasicController.CHOICE_MODE_MULTIPLE){
-                mCheckStates.put(i,isItemChecked(t,i));
+            } else if (mParams.choiceMode == BasicController.CHOICE_MODE_MULTIPLE) {
+                mCheckStates.put(i, isItemChecked(t, i));
             }
         }
 
@@ -105,32 +104,32 @@ public abstract class BasicAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
 
     public void setOnItemClickListener(RecyclerView recyclerView, OnItemClickListener onItemClickListener) {
         mOnItemClickListener = onItemClickListener;
-        recyclerView.addOnItemTouchListener(new OnRecyclerItemClickListener(recyclerView){
+        recyclerView.addOnItemTouchListener(new OnRecyclerItemClickListener(recyclerView) {
             @Override
             public void onItemClick(ViewHolder vh) {
-                int realPosition = vh.getAdapterPosition() -1 ;
+                int realPosition = vh.getAdapterPosition() - 1;
                 boolean oldValue;
                 BaseViewHolder holder = (BaseViewHolder) vh;
-                if(vh.getItemViewType() == NORMAL_VIEW){
-                    if(mParams.choiceMode == BasicController.CHOICE_MODE_SINGLE){
+                if (vh.getItemViewType() == NORMAL_VIEW) {
+                    if (mParams.choiceMode == BasicController.CHOICE_MODE_SINGLE) {
                         oldValue = mCheckStates.get(realPosition);
-                        if(!oldValue){ //not checked -> checked
+                        if (!oldValue) { //not checked -> checked
                             clearChoices();
-                            mCheckStates.put(realPosition,true);
+                            mCheckStates.put(realPosition, true);
 
-                        }else{ // checked -> not checked
-                            mCheckStates.put(realPosition,false);
-                            holder.setChecked(mParams.checkId,false);
+                        } else { // checked -> not checked
+                            mCheckStates.put(realPosition, false);
+                            holder.setChecked(mParams.checkId, false);
                         }
 
-                    }else if (mParams.choiceMode == BasicController.CHOICE_MODE_MULTIPLE){
+                    } else if (mParams.choiceMode == BasicController.CHOICE_MODE_MULTIPLE) {
                         oldValue = mCheckStates.get(realPosition);
-                        mCheckStates.put(realPosition,!oldValue);
+                        mCheckStates.put(realPosition, !oldValue);
 //                        notifyDataSetChanged();
-                        holder.setChecked(mParams.checkId,!oldValue);
+                        holder.setChecked(mParams.checkId, !oldValue);
                     }
-                    if(mOnItemClickListener != null){
-                        mOnItemClickListener.onItemClick((BaseViewHolder)vh,realPosition);
+                    if (mOnItemClickListener != null) {
+                        mOnItemClickListener.onItemClick((BaseViewHolder) vh, realPosition);
                     }
                 }
             }
@@ -138,8 +137,11 @@ public abstract class BasicAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
 
     }
 
-    public SparseBooleanArray getCheckItemPositions(){
-        if(mParams.choiceMode != BasicController.CHOICE_MODE_NONE){
+    /**
+     * Returns the set of checked items in the list.
+     */
+    public SparseBooleanArray getCheckItemPositions() {
+        if (mParams.choiceMode != BasicController.CHOICE_MODE_NONE) {
             return mCheckStates;
         }
         return null;
@@ -147,7 +149,8 @@ public abstract class BasicAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
 
     /**
      * need to override when
-     * @param t data obj
+     *
+     * @param t        data obj
      * @param position position of the data
      * @return true if item at position is checked ,otherwise false
      */
@@ -334,6 +337,11 @@ public abstract class BasicAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
 
     private boolean isLoadEnable() {
         return isLoadEnable;
+    }
+
+    public void swipeRefresh() {
+        isLoadEnable = true;
+
     }
 
     public void finishLoad() {
