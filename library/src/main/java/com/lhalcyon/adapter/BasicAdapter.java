@@ -103,7 +103,7 @@ public abstract class BasicAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
         }
     }
 
-    public void setOnItemClickListener(RecyclerView recyclerView, final OnItemClickListener onItemClickListener) {
+    public void setOnItemClickListener(RecyclerView recyclerView, OnItemClickListener onItemClickListener) {
         mOnItemClickListener = onItemClickListener;
         recyclerView.addOnItemTouchListener(new OnRecyclerItemClickListener(recyclerView){
             @Override
@@ -117,7 +117,7 @@ public abstract class BasicAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
                         if(!oldValue){ //not checked -> checked
                             clearChoices();
                             mCheckStates.put(realPosition,true);
-                            notifyDataSetChanged();
+
                         }else{ // checked -> not checked
                             mCheckStates.put(realPosition,false);
                             holder.setChecked(mParams.checkId,false);
@@ -136,6 +136,13 @@ public abstract class BasicAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
             }
         });
 
+    }
+
+    public SparseBooleanArray getCheckItemPositions(){
+        if(mParams.choiceMode != BasicController.CHOICE_MODE_NONE){
+            return mCheckStates;
+        }
+        return null;
     }
 
 

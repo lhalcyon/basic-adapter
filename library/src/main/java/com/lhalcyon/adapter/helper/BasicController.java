@@ -90,13 +90,37 @@ public class BasicController {
     }
 
     public static class BasicParams{
+        /**
+         * choice mode of RecyclerView
+         */
         public int choiceMode = CHOICE_MODE_NONE;
+        /**
+         * the id of the checkable component
+         */
         public int checkId = -1;
+        /**
+         * headers container
+         */
         public List<View> headers = new ArrayList<>();
+        /**
+         * footers container
+         */
         public List<View> footers = new ArrayList<>();
+        /**
+         * loading view
+         */
         public View loading;
+        /**
+         * loaded view
+         */
         public View loaded;
+        /**
+         * empty view
+         */
         public View empty;
+        /**
+         * listener action when {@link #loading} view shows
+         */
         public OnLoadMoreListener onLoadMoreListener;
         @LayoutRes public int layoutId;
 
