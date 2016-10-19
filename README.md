@@ -23,7 +23,7 @@ Grab via Maven:
 <dependency>
   <groupId>com.lhalcyon</groupId>
   <artifactId>basic-adapter</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1</version>
   <type>pom</type>
 </dependency>
 ```
@@ -31,7 +31,7 @@ Grab via Maven:
 or Gradle:
 
 ```groovy
-compile 'com.lhalcyon:basic-adapter:1.0.0' 
+compile 'com.lhalcyon:basic-adapter:1.0.1' 
 ```
 
 

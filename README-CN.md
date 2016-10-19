@@ -21,7 +21,7 @@ Grab via Maven:
 <dependency>
   <groupId>com.lhalcyon</groupId>
   <artifactId>basic-adapter</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1</version>
   <type>pom</type>
 </dependency>
 ```
@@ -29,7 +29,7 @@ Grab via Maven:
 or Gradle:
 
 ```groovy
-compile 'com.lhalcyon:basic-adapter:1.0.0' 
+compile 'com.lhalcyon:basic-adapter:1.0.1' 
 ```
 
 
@@ -85,7 +85,7 @@ Then  override method  `isItemChecked(T t,int position)` and set `OnItemClickLis
 mRecyclerView.setAdapter(mAdapter = new CheckAdapter(params,mManList){
             @Override
             public boolean isItemChecked(Man man, int position) {
-                return man.isSingle;//必复写的方法,用来初始化条目选择状态,如果适配器为单选,此方法却有多个条目返回,则只有最后一个返回true的条目是选中的.
+                return man.isSingle;//必复写的方法,用来初始化条目选择状态,如果适配器为单选,此方法却有多个条目返回true,则只有最后一个返回true的条目是选中的.
             }
         });
 mAdapter.setOnItemClickListener(mRecyclerView, new OnItemClickListener() {
