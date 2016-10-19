@@ -111,7 +111,7 @@ public abstract class BasicAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
                         if (!oldValue) { //not checked -> checked
                             clearChoices();
                             mCheckStates.put(realPosition, true);
-
+                            notifyDataSetChanged();
                         } else { // checked -> not checked
                             mCheckStates.put(realPosition, false);
                             holder.setChecked(mParams.checkId, false);

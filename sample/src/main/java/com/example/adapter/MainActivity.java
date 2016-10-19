@@ -75,9 +75,8 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
                     }
                 })
                 .build();
-        //normal item data init
-//        mManList.addAll(random(0,10));
 
+        mManList.addAll(random(0,10));
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(mAdapter = new MyAdapter(p,mManList));
         mRecyclerView.addOnItemTouchListener(new OnRecyclerItemClickListener(mRecyclerView){
@@ -90,13 +89,13 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
             }
         });
         mRefreshLayout.setOnRefreshListener(this);
-        mRefreshLayout.post(new Runnable() {
+        /*mRefreshLayout.post(new Runnable() {
             @Override
             public void run() {
                 mRefreshLayout.setRefreshing(true);
                 onRefresh();
             }
-        });
+        });*/
     }
 
     private List<Man> random(int start,int count){
