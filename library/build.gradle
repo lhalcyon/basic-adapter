@@ -34,7 +34,7 @@ publish {
     userOrg = 'lhalcyon'
     groupId = 'com.lhalcyon'
     artifactId = 'basic-adapter'
-    publishVersion = '1.0.0'
+    publishVersion = '1.0.1'
     desc = 'basic adapter for RecyclerView'
     website = 'https://github.com/lhalcyon/basic-adapter'
 }
