@@ -2,7 +2,7 @@
 
 
 
-[中文版](https://github.com/lhalcyon/basic-adapter/raw/master/README-CN.md)
+[中文版](https://github.com/lhalcyon/basic-adapter/blob/master/README-CN.md)
 
 A common tool adapter for Android RecyclerView.basic functions of current version as below:
 
