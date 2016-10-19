@@ -4,7 +4,7 @@
 
 [中文版](www.baidu.com)
 
-a common tool adapter for Android RecyclerView.basic functions of current version as below:
+A common tool adapter for Android RecyclerView.basic functions of current version as below:
 
 * add header & footer
 * load more
@@ -19,7 +19,7 @@ a common tool adapter for Android RecyclerView.basic functions of current versio
 
 Grab via Maven:
 
-```
+```xml
 <dependency>
   <groupId>com.lhalcyon</groupId>
   <artifactId>basic-adapter</artifactId>
@@ -30,7 +30,7 @@ Grab via Maven:
 
 or Gradle:
 
-```
+```groovy
 compile 'com.lhalcyon:basic-adapter:1.0.0' 
 ```
 
@@ -38,7 +38,7 @@ compile 'com.lhalcyon:basic-adapter:1.0.0'
 
 ### Usage
 
-initialize adapter :
+Initialize adapter :
 
 ```java
 BasicParams p = new BasicController.Builder()
@@ -47,7 +47,7 @@ BasicParams p = new BasicController.Builder()
 mRecyclerView.setAdapter(mAdapter = new MyAdapter(p,list));
 ```
 
-optional configuration as below:
+Optional configuration as below:
 
 ```java
 BasicParams p = new BasicController.Builder()
@@ -71,7 +71,7 @@ BasicParams p = new BasicController.Builder()
 
 
 
-checkable item config:
+Checkable item config:
 
 ```java
 BasicParams params = new BasicController.Builder()
@@ -81,7 +81,7 @@ BasicParams params = new BasicController.Builder()
                 .build();
 ```
 
-then  override method  `isItemChecked(T t,int position)` and set `OnItemClickListener` which is necessary
+Then  override method  `isItemChecked(T t,int position)` and set `OnItemClickListener` which is necessary
 
 ```java
 mRecyclerView.setAdapter(mAdapter = new CheckAdapter(params,mManList){
@@ -98,23 +98,17 @@ mAdapter.setOnItemClickListener(mRecyclerView, new OnItemClickListener() {
         });
 ```
 
+single choice mode:
+
 ![single choice](https://github.com/lhalcyon/basic-adapter/raw/master/art/recycler-check-single.gif)
+
+
+
+multiple choice mode:
 
 ![multiple choice](https://github.com/lhalcyon/basic-adapter/raw/master/art/recycler-check-multiple.gif)
 
-gif is under poor quality :( ,but the lib  works well shown on real device or virtual device
-
-
-
-
-
-
-
-
-
-
-
-
+Gif is under poor quality :( ,but the lib  works well shown on real device or virtual device
 
 
 
