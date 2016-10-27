@@ -7,8 +7,8 @@ android {
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 23
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.0.2"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -34,7 +34,7 @@ publish {
     userOrg = 'lhalcyon'
     groupId = 'com.lhalcyon'
     artifactId = 'basic-adapter'
-    publishVersion = '1.0.1'
+    publishVersion = '1.0.2'
     desc = 'basic adapter for RecyclerView'
     website = 'https://github.com/lhalcyon/basic-adapter'
 }

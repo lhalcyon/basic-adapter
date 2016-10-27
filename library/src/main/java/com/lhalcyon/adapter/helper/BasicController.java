@@ -1,7 +1,9 @@
 package com.lhalcyon.adapter.helper;
 
-import android.support.annotation.LayoutRes;
+import android.util.SparseIntArray;
 import android.view.View;
+
+import com.lhalcyon.adapter.error.IllegalArgumentError;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +35,15 @@ public class BasicController {
         }
 
         public Builder layoutRes(int layoutId){
-            p.layoutId = layoutId;
+            p.layoutResArray.put(0,layoutId);
+            return this;
+        }
+
+        public Builder layoutRes(int layoutId,int viewType){
+            if(viewType <0){
+                throw new IllegalArgumentError("illegal view type.[0,+)");
+            }
+            p.layoutResArray.put(viewType,layoutId);
             return this;
         }
 
@@ -117,7 +127,11 @@ public class BasicController {
          * listener action when {@link #loading} view shows
          */
         public OnLoadMoreListener onLoadMoreListener;
-        @LayoutRes public int layoutId;
+
+        /**
+         * layout resource array
+         */
+        public SparseIntArray layoutResArray = new SparseIntArray();
 
     }
 }

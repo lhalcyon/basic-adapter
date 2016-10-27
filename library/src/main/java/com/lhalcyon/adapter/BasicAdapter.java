@@ -27,10 +27,10 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 public abstract class BasicAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
     public static final int NORMAL_VIEW = 0;//normal item
-    public static final int HEADER_VIEW = 1;//header part
-    public static final int LOAD_VIEW = 2;//loading/loaded part
-    public static final int FOOTER_VIEW = 3;//footer part
-    public static final int EMPTY_VIEW = 4;//empty part
+    public static final int HEADER_VIEW = -1;//header part
+    public static final int LOAD_VIEW = -2;//loading/loaded part
+    public static final int FOOTER_VIEW = -3;//footer part
+    public static final int EMPTY_VIEW = -4;//empty part
 
 
     BasicParams mParams;
@@ -176,9 +176,13 @@ public abstract class BasicAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
         } else if (position == mData.size() + 2 + empty) {
             return FOOTER_VIEW;
         } else {
-            return NORMAL_VIEW;
+            return getItemViewType(mData.get(position-1),position-1);
         }
 
+    }
+
+    public int getItemViewType(T t,int position){
+        return NORMAL_VIEW;
     }
 
 
