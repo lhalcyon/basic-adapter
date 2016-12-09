@@ -8,16 +8,22 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".EntranceActivity">
+        <activity android:name=".EntranceActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".check.CheckActivity">
+        <activity android:name=".check.CheckActivity"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity android:name=".multi.MultiTypeActivity"
+            android:screenOrientation="portrait">
         </activity>
     </application>
 

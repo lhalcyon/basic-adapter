@@ -195,7 +195,8 @@ public abstract class BasicAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
                 vh = onCreateEmptyHolder(parent);
                 break;
             case NORMAL_VIEW:
-                vh = onCreateDefViewHolder(parent);
+            default:
+                vh = onCreateDefViewHolder(parent,viewType);
                 break;
             case HEADER_VIEW:
                 vh = onCreateHeaderHolder(parent);
@@ -254,24 +255,22 @@ public abstract class BasicAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
         return new BaseViewHolder(mHeaderLayout);
     }
 
-    protected BaseViewHolder onCreateDefViewHolder(ViewGroup parent) {
-        return createBaseViewHolder(parent, mParams.layoutId);
+    protected BaseViewHolder onCreateDefViewHolder(ViewGroup parent, int viewType) {
+        int layoutResId = mParams.layoutResArray.get(viewType);
+        return new BaseViewHolder(getItemView(layoutResId,parent,viewType));
     }
 
-    protected BaseViewHolder createBaseViewHolder(ViewGroup parent, int layoutResId) {
-        return new BaseViewHolder(getItemView(layoutResId, parent));
-    }
-
-    protected View getItemView(int layoutResId, ViewGroup parent) {
+    protected View getItemView(int layoutResId, ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(layoutResId, parent, false);
-        return process(itemView);
+        return process(itemView,viewType);
     }
 
     /**
      * @param itemView view of normal item
-     * @return processed view of normal item ;do nothing by default
+     * @param viewType view type
+     * @return processed view of normal item ;do nothing by default . you can override to manipulate the view
      */
-    private View process(View itemView) {
+    protected View process(View itemView, int viewType) {
         return itemView;
     }
 

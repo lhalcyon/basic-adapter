@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.example.adapter.check.CheckActivity;
+import com.example.adapter.multi.MultiTypeActivity;
 
 public class EntranceActivity extends AppCompatActivity {
 
@@ -21,5 +22,9 @@ public class EntranceActivity extends AppCompatActivity {
 
     public void checkable(View v){
         startActivity(new Intent(this,CheckActivity.class));
+    }
+
+    public void multi(View v){
+        startActivity(new Intent(this,MultiTypeActivity.class));
     }
 }
